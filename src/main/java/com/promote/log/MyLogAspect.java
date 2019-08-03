@@ -6,8 +6,12 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.UUID;
@@ -16,6 +20,7 @@ import java.util.UUID;
 @Component
 @Aspect
 public class MyLogAspect {
+
     private static final Logger logger = LoggerFactory.getLogger(MyLogAspect.class);
     //Controller层切点com.promote.controller
     //@Pointcut("execution (* com.promote.controller..*.*(..))")
@@ -64,8 +69,8 @@ public class MyLogAspect {
     @After("controllerAspect()")
     public void after(JoinPoint joinPoint) {
 
-       /* HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session = request.getSession();  */
+       HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
         //读取session中的用户
         // User user = (User) session.getAttribute("user");
         //请求的IP

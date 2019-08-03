@@ -5,7 +5,9 @@ import com.promote.controller.itemview.UserVO;
 import com.promote.dao.UserDOMapper;
 import com.promote.dao.UserPasswordDOMapper;
 import com.promote.dataobject.UserDO;
+import com.promote.dataobject.UserDOExample;
 import com.promote.dataobject.UserPasswordDO;
+import com.promote.dataobject.UserPasswordDOExample;
 import com.promote.error.BusinessException;
 import com.promote.error.EmBusinessError;
 import com.promote.service.UserService;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import javax.jws.soap.SOAPBinding;
 import javax.validation.Validation;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -54,8 +58,25 @@ public class UserServiceImpl implements UserService {
         if (userDO == null) {
             return null;
         }
-        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
-        return converFromDataObject(userDO, userPasswordDO);
+
+        UserPasswordDOExample example = new UserPasswordDOExample();
+        UserPasswordDOExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userDO.getId());
+
+        List<UserPasswordDO> userPasswordDOS =  userPasswordDOMapper.selectByExample(example);
+
+        return converFromDataObject(userDO, userPasswordDOS.get(0));
+
+    }
+
+    @Override
+    public List<UserModel> getAll() {
+        UserDOExample example = new UserDOExample();
+        example.setOrderByClause("id desc");
+
+        List<UserDO> userDOS =  userDOMapper.selectByExample(example);
+
+        return converFromUserDOToUserModel(userDOS);
 
     }
 
@@ -70,6 +91,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private List<UserModel>  converFromUserDOToUserModel(List<UserDO> userDOS){
+        List<UserModel> userModels = new ArrayList<>();
+        for (UserDO userDO : userDOS){
+            UserModel userModel = new UserModel();
+            BeanUtils.copyProperties(userDO, userModel);
+            userModels.add(userModel);
+        }
+        return userModels;
+
+    }
     private UserModel converFromDataObject(UserDO userDO, UserPasswordDO userPasswordDO) {
         if (userDO == null) {
             return null;
