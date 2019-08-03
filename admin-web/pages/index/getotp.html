@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>AdminLTE 2 | Registration Page</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+</head>
+<body>
+<div>
+	<h3>获取短信</h3>
+	<div>
+		<label>手机号</label>
+		<div>
+			<input type="text" placehoder="手机号" id="telephone" name="telephone"/>
+		</div>
+		<div>
+			<button type="submit" id="getopt">获取手机号</button>
+		</div>
+	</div>
+</div>
+</body>
+<!-- jQuery 3 -->
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	$("#getopt").on("click",function(){
+		var telephone = $("#telephone").val();
+		if (telephone == null || telephone == "") {
+			alert('输入手机号码');
+			return false;
+		};
+		$.ajax({
+			type:"POST",
+			contentType:"application/x-www-form-urlencoded",
+			url:"http://localhost:8090/user/getopt",
+			data:{
+				"telephone":telephone
+			},
+			success:function(data){
+				if (data.status == "success") {
+					alert("发送成功")
+
+				}else{
+					alert(data.data.errMsg)
+				}
+
+			},
+			error:function(data){
+				alert(data.responseText)
+			}
+		});
+		return false;
+	})
+});
+</script>
+</html>
