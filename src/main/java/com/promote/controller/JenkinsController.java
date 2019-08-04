@@ -41,7 +41,6 @@ public class JenkinsController {
             String logs = buildWithDetails.getConsoleOutputText();
             logger.info(logs);
             return CommonReturnType.create("OK");
-            dasdasd
         } catch (Exception e) {
             e.printStackTrace();
         }
